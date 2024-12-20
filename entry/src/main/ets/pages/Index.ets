@@ -16,10 +16,13 @@ struct Index {
         Scroll() {
           Column() {
             Banner()
-            // EnablementItem()
-            TutorialItem()
+            EnablementView()
+            TutorialView()
           }
         }
+        .scrollBar(BarState.Off)
+        .align(Alignment.TopStart)
+        .layoutWeight(1)
       }
     }
     .height('100%')
@@ -76,96 +79,6 @@ struct Banner{
 }
 
 
-@Preview
-@Component
-struct EnablementItem {
-  private title: string = 'HarmonyOS第一课'
-  private brief: string = '基于真实的开发场景，提供向导式学习，多维度融合课程等内容，给开发者提供全新的学习体验'
-
-  build() {
-    Column(){
-      Image($r('app.media.enablement_pic1'))
-        .width('100%')
-        .borderRadius({topLeft: 16, topRight: 16})
-        .height(96)
-        .objectFit(ImageFit.Cover)
-      Text(this.title)
-        .height(19)
-        .width('100%')
-        .fontSize(14)
-        .textAlign(TextAlign.Start)
-        .textOverflow({overflow: TextOverflow.Ellipsis})
-        .maxLines(1)
-        .padding({left: 12, right: 12})
-        .margin({top:8})
-      Text(this.brief)
-        .height(32)
-        .width('100%')
-        .fontSize(12)
-        .textAlign(TextAlign.Start)
-        .textOverflow({ overflow: TextOverflow.Ellipsis })
-        .maxLines(2)
-        .fontWeight(400)
-        .fontColor('rgba(0, 0, 0, 0.6)')
-        .padding({ left: 12, right: 12 })
-        .margin({ top: 2 })
-    }
-    .borderRadius(16)
-    .backgroundColor(Color.White)
-    .width(160)
-    .height(169)
-  }
-}
-
-const title: string = 'Step1 快速入门介绍';
-const brief: string = '本篇教程实现了快速入门——一个用于了解和学习HarmonyOS的应用程序 。';
-
-@Preview
-@Component
-struct TutorialItem{
-
-  build() {
-    Row(){
-      Column(){
-        Text(title)
-          .height(19)
-          .width('100%')
-          .fontSize(14)
-          .textAlign(TextAlign.Start)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-          .maxLines(1)
-          .fontWeight(400)
-          .margin({ top: 4 })
-        Text(brief)
-          .height(32)
-          .width('100%')
-          .fontSize(12)
-          .textAlign(TextAlign.Start)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-          .maxLines(2)
-          .fontWeight(400)
-          .fontColor('rgba(0, 0, 0, 0.6)')
-          .margin({ top: 5 })
-      }
-      .margin({right: 12})
-      .alignItems(HorizontalAlign.Start)
-      .height('100%')
-      .layoutWeight(1)
-      Image($r('app.media.enablement_pic1'))
-        .width(108)
-        .height(64)
-        .borderRadius(16)
-        .objectFit(ImageFit.Cover)
-    }
-    .width('100%')
-    .height(88)
-    .padding(12)
-    .backgroundColor(Color.White )
-    .borderRadius(16)
-    .alignItems(VerticalAlign.Top)
-  }
-}
-
 class ArticleClass {
   id: string = '';
   imageSrc: ResourceStr = '';
@@ -184,7 +97,53 @@ class ArticleClass {
 
 
 @Component
+struct EnablementItem {
+  @Prop enablementItem: ArticleClass;
+  // private title: string = 'HarmonyOS第一课'
+  // private brief: string = '基于真实的开发场景，提供向导式学习，多维度融合课程等内容，给开发者提供全新的学习体验'
+
+  build() {
+    Column(){
+      Image(this.enablementItem.imageSrc)
+        .width('100%')
+        .borderRadius({topLeft: 16, topRight: 16})
+        .height(96)
+        .objectFit(ImageFit.Cover)
+      Text(this.enablementItem.title)
+        .height(19)
+        .width('100%')
+        .fontSize(14)
+        .textAlign(TextAlign.Start)
+        .textOverflow({overflow: TextOverflow.Ellipsis})
+        .maxLines(1)
+        .padding({left: 12, right: 12})
+        .margin({top:8})
+      Text(this.enablementItem.brief)
+        .height(32)
+        .width('100%')
+        .fontSize(12)
+        .textAlign(TextAlign.Start)
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
+        .maxLines(2)
+        .fontWeight(400)
+        .fontColor('rgba(0, 0, 0, 0.6)')
+        .padding({ left: 12, right: 12 })
+        .margin({ top: 2 })
+    }
+    .borderRadius(16)
+    .backgroundColor(Color.White)
+    .width(160)
+    .height(169)
+  }
+}
+
+// const title: string = 'Step1 快速入门介绍';
+// const brief: string = '本篇教程实现了快速入门——一个用于了解和学习HarmonyOS的应用程序 。';
+
+@Preview
+@Component
 struct EnablementView{
+  // $r('app.media.banner_pic0')
   @State enablementList: Array<ArticleClass> = [
     new ArticleClass('1', $r('app.media.enablement_pic1'), 'HarmonyOS第一课',
       '基于真实的开发场景，提供向导式学习，多维度融合课程等内容，给开发者提供全新的学习体验。',
@@ -212,10 +171,85 @@ struct EnablementView{
   ];
 
   build() {
+    Column() {
+      Text('赋能套件')
+        .fontColor('#182431')
+        .fontSize(16)
+        .fontWeight(500)
+        .fontFamily('HarmonyHeiTi-medium')
+        .textAlign(TextAlign.Start)
+        .padding({ left: 16 })
+        .margin({ bottom: 8.5 })
+      Grid() {
+        ForEach(
+          this.enablementList,
+          (item: ArticleClass)=>{
+            GridItem(){
+              EnablementItem({ enablementItem: item })
+            }
+          },
+          (item: ArticleClass) => item.id
+        )
+      }
+      .rowsTemplate('1fr')
+      .columnsGap(8)
+      .scrollBar(BarState.Off)
+      .height(169)
+      .padding({ top: 2, left: 16, right: 16 })
+    }
+    .margin({top: 18})
+    .alignItems(HorizontalAlign.Start)
   }
 }
 
 
+@Component
+struct TutorialItem{
+  @Prop tutorialItem: ArticleClass
+  build() {
+    Row(){
+      Column(){
+        Text(this.tutorialItem.title)
+          .height(19)
+          .width('100%')
+          .fontSize(14)
+          .textAlign(TextAlign.Start)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+          .maxLines(1)
+          .fontWeight(400)
+          .margin({ top: 4 })
+        Text(this.tutorialItem.brief)
+          .height(32)
+          .width('100%')
+          .fontSize(12)
+          .textAlign(TextAlign.Start)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+          .maxLines(2)
+          .fontWeight(400)
+          .fontColor('rgba(0, 0, 0, 0.6)')
+          .margin({ top: 5 })
+      }
+      .margin({right: 12})
+      .alignItems(HorizontalAlign.Start)
+      .height('100%')
+      .layoutWeight(1)
+      Image(this.tutorialItem.imageSrc)
+        .width(108)
+        .height(64)
+        .borderRadius(16)
+        .objectFit(ImageFit.Cover)
+    }
+    .width('100%')
+    .height(88)
+    .padding(12)
+    .backgroundColor(Color.White )
+    .borderRadius(16)
+    .alignItems(VerticalAlign.Top)
+  }
+}
+
+
+@Preview
 @Component
 struct TutorialView {
   @State tutorialList: Array<ArticleClass> = [
@@ -254,5 +288,30 @@ struct TutorialView {
   ];
 
   build() {
+    Column(){
+      Text('入门教程')
+        .fontColor('#182431')
+        .fontSize(16)
+        .fontWeight(500)
+        .fontFamily('HarmonyHeiTi-medium')
+        .textAlign(TextAlign.Start)
+        .padding({ left: 16 })
+        .margin({ bottom: 8.5 })
+      List({ space: 12 }) {
+        ForEach(
+          this.tutorialList,
+          (item: ArticleClass) => {
+            ListItem() {
+              TutorialItem({ tutorialItem: item })
+            }
+          },
+          (item: ArticleClass) => item.id
+        )
+      }
+      .scrollBar(BarState.Off)
+      .padding({ left: 16, right: 16 })
+    }
+    .margin({top: 18})
+    .alignItems(HorizontalAlign.Start)
   }
 }
